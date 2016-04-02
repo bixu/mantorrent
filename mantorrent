@@ -1,0 +1,21 @@
+#!/bin/bash
+
+TRANSMISSION_URL=$1
+UPLOAD_LIMIT=1
+
+transmission-daemon
+
+sleep 3
+
+transmission-remote localhost --encryption-required --uplimit $UPLOAD_LIMIT --add $TRANSMISSION_URL
+
+while [ $(transmission-remote localhost --list | grep -v "^ID\|Sum" | grep -c "100%\|Seeding") -ne 1 ]
+do
+  transmission-remote localhost --list
+  if [ $(transmission-remote localhost --list | grep -v "^ID\|Sum" | grep -c "100%\|Seeding") -ge 1 ]; then
+    pkill transmission
+    npm install -g manta-sync
+    manta-sync /root/Downloads/ /$MANTA_USER/stor/Downloads/
+    exit
+  fi
+done
