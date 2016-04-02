@@ -12,6 +12,8 @@ transmission-remote localhost --encryption-required --uplimit $UPLOAD_LIMIT --ad
 while [ $(transmission-remote localhost --list | grep -v "^ID\|Sum" | grep -c "100%\|Seeding") -ne 1 ]
 do
   transmission-remote localhost --list
+  sleep 1
+  clear
   if [ $(transmission-remote localhost --list | grep -v "^ID\|Sum" | grep -c "100%\|Seeding") -ge 1 ]; then
     pkill transmission
     npm install -g manta-sync
